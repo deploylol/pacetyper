@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pacetyper — self-check</title>
+<style>
+  body { font: 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+         background: #14161a; color: #d6dae1; padding: 18px; margin: 0; }
+  .ok { color: #5fbf8e; } .bad { color: #e0707a; }
+  .h { color: #7d95f0; font-weight: 700; }
+  h1 { font: 600 16px system-ui; color: #e8eaee; margin: 0 0 6px; }
+  .sub { font: 13px/1.5 system-ui; color: #98a0ae; margin: 0 0 16px; max-width: 62ch; }
+  pre { margin: 0; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Pacetyper self-check</h1>
+<p class="sub">Runs the typing engine through its invariants against the very
+modules the extension ships. Everything below should say PASS.</p>
+<pre id="out">running…</pre>
+
+<!-- This page imports the real engine rather than carrying a copy of it. An
+     earlier version inlined the whole engine so it could be opened straight
+     off disk, and the copy promptly drifted out of step with the original —
+     which meant the self-check could pass while the extension was broken. -->
+<script type="module" src="selfcheck.js"></script>
+</body>
+</html>

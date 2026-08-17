@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pacetyper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><span class="mark" aria-hidden="true"></span><h1>Pacetyper</h1></div>
+  <button id="open-panel" class="link-btn" type="button">Full editor</button>
+</header>
+
+<div id="target" class="target">
+  <span class="dot" aria-hidden="true"></span>
+  <span id="target-text" class="target-text">Checking this page…</span>
+  <button id="aim" class="link-btn" type="button" hidden>Choose</button>
+</div>
+
+<div id="resume" class="resume" hidden>
+  <span id="resume-text" class="resume-text"></span>
+  <span class="resume-acts">
+    <button id="resume-go" class="link-btn" type="button">Continue</button>
+    <button id="resume-skip" class="link-btn" type="button">Discard</button>
+  </span>
+</div>
+
+<main>
+  <label class="field-label" for="text">Your text</label>
+  <textarea id="text" spellcheck="false"
+    placeholder="Paste or write the text you want typed out…"></textarea>
+  <div class="meta"><span id="counter">0 characters</span>
+    <button id="clear" class="link-btn" type="button">Clear</button></div>
+
+  <div class="grid">
+    <div>
+      <label class="field-label" for="style">Typing style</label>
+      <select id="style">
+        <option value="careful">Careful</option>
+        <option value="normal" selected>Normal</option>
+        <option value="rushed">Rushed</option>
+        <option value="touch-typist">Touch typist</option>
+        <option value="hunt-and-peck">Two fingers</option>
+        <option value="sloppy">Fast and messy</option>
+        <option value="tired">Tired</option>
+      </select>
+    </div>
+    <div>
+      <label class="field-label" for="mode">Pacing</label>
+      <select id="mode">
+        <option value="compose" selected>Writing as I go</option>
+        <option value="transcribe">Copying a draft</option>
+      </select>
+    </div>
+  </div>
+  <p id="mode-hint" class="hint"></p>
+
+  <div class="slider-row">
+    <label class="field-label" for="wpm">Speed</label>
+    <output id="wpm-out" for="wpm">45 wpm</output>
+  </div>
+  <input type="range" id="wpm" min="12" max="140" step="1" value="45">
+
+  <div class="grid grid-tight">
+    <div>
+      <label class="field-label" for="breaks">Long breaks</label>
+      <input type="number" id="breaks" min="0" max="20" step="1" value="0">
+    </div>
+    <div>
+      <label class="field-label" for="duration">Finish by</label>
+      <input type="text" id="duration" placeholder="e.g. 90m" autocomplete="off">
+    </div>
+  </div>
+
+  <label class="check">
+    <input type="checkbox" id="perfect">
+    <span>Correct every typo</span>
+  </label>
+  <label class="check" id="profile-row">
+    <input type="checkbox" id="use-profile">
+    <span>Use my typing profile</span>
+  </label>
+  <label class="check" id="list-row" hidden>
+    <input type="checkbox" id="lists">
+    <span>Let the editor number lists and bullets</span>
+  </label>
+  <label class="check" id="math-row" hidden>
+    <input type="checkbox" id="math">
+    <span>Write formulas as symbols (x² instead of x^2)</span>
+  </label>
+</main>
+
+<footer>
+  <div id="plan" class="plan">
+    <div id="plan-headline" class="plan-headline">Enter some text to see the timing.</div>
+    <div id="plan-detail" class="plan-detail"></div>
+  </div>
+
+  <div id="progress" class="progress" hidden>
+    <div class="progress-track"><i id="progress-fill"></i></div>
+    <span id="progress-pct" class="progress-pct">0%</span>
+  </div>
+
+  <div class="actions">
+    <button id="start" class="btn btn-primary" type="button">Start typing</button>
+    <button id="pause" class="btn" type="button" hidden>Pause</button>
+    <button id="stop" class="btn btn-stop" type="button" hidden>Stop</button>
+  </div>
+  <div id="status" class="status" role="status"></div>
+</footer>
+
+<script src="popup.js" type="module"></script>
+</body>
+</html>

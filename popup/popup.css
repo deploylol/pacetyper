@@ -1,0 +1,256 @@
+/* Popup styling. Same palette and spacing scale as the full panel, compressed
+   into the ~360px Firefox gives a browser action.
+
+   Flat fills, no blur, no shadows on anything that repaints: this has to feel
+   instant on a slow laptop, and a popup that hitches while opening is worse
+   than a plain one. */
+
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --ink: #171b21;
+  --ink-soft: #5b6672;
+  --line: #dfe3e8;
+  --line-soft: #eceff3;
+  --accent: #1c6fd0;
+  --accent-ink: #ffffff;
+  --ok: #17794d;
+  --warn: #8a5a00;
+  --error: #b4322b;
+  --stop: #b4322b;
+  --radius: 8px;
+  --pad: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --card: #1a1f27;
+    --ink: #e8edf4;
+    --ink-soft: #9aa7b5;
+    --line: #2b3542;
+    --line-soft: #232b35;
+    --accent: #4c9df0;
+    --accent-ink: #0c1219;
+    --ok: #3fb27f;
+    --warn: #d8a33a;
+    --error: #e5675f;
+    --stop: #c9524a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 360px;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ─────────────────────────────────────────────────────────────── bar ── */
+
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px var(--pad);
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+
+.brand { display: flex; align-items: center; gap: 8px; }
+
+.mark {
+  width: 14px; height: 14px; border-radius: 4px;
+  background: var(--accent);
+}
+
+h1 { margin: 0; font-size: 14px; font-weight: 650; letter-spacing: -0.01em; }
+
+.link-btn {
+  background: none; border: 0; padding: 2px 0;
+  color: var(--accent); font: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer;
+}
+.link-btn:hover { text-decoration: underline; }
+
+/* ──────────────────────────────────────────────────────────── target ── */
+
+/* The line that answers the only question that matters before pressing
+   start: where is this text about to go? */
+.target {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px var(--pad);
+  background: var(--line-soft);
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* Shown only after a run was cut short by Firefox going away. */
+.resume {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px var(--pad);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  font-size: 12px;
+  color: var(--ink);
+}
+.resume-text { flex: 1; }
+.resume-acts { flex: none; white-space: nowrap; }
+
+.target .dot {
+  width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: var(--ink-soft);
+}
+.target.is-ready .dot { background: var(--ok); }
+.target.is-ready .target-text { color: var(--ink); }
+.target.is-blocked .dot { background: var(--error); }
+
+.target-text { flex: 1; min-width: 0; }
+
+/* ────────────────────────────────────────────────────────────── form ── */
+
+main { padding: var(--pad); }
+
+.field-label {
+  display: block;
+  font-size: 11px; font-weight: 650; letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+
+textarea {
+  width: 100%; height: 96px; resize: vertical;
+  padding: 9px 10px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); color: var(--ink);
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+textarea:focus-visible, select:focus-visible, input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin: 5px 0 12px;
+  font-size: 11px; color: var(--ink-soft);
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.grid-tight { grid-template-columns: 88px 1fr; }
+
+select, input[type="text"], input[type="number"] {
+  width: 100%; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: var(--card); color: var(--ink);
+  font: inherit;
+}
+
+.slider-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 4px;
+}
+.slider-row .field-label { margin-bottom: 0; }
+
+output { font-size: 12px; font-weight: 650; color: var(--ink); }
+
+input[type="range"] {
+  width: 100%; margin: 0 0 12px; accent-color: var(--accent);
+}
+
+.check {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px; font-size: 12px; cursor: pointer;
+}
+.check input { accent-color: var(--accent); margin: 0; }
+.check input:disabled + span { color: var(--ink-soft); }
+
+/* ──────────────────────────────────────────────────────────── footer ── */
+
+footer {
+  padding: 10px var(--pad) 12px;
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+
+/* Time and speed lead; the rest is detail in a quieter size. One run-on line
+   of six statistics reads as a blob and answers nobody's actual question. */
+.plan { margin-bottom: 9px; }
+
+.plan-headline {
+  font-size: 13px; font-weight: 650; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.35em;
+}
+
+.plan-detail {
+  font-size: 11px; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.progress {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 9px;
+}
+
+.progress-track {
+  flex: 1; height: 5px; border-radius: 3px;
+  background: var(--line); overflow: hidden;
+}
+
+.progress-track i {
+  display: block; height: 100%; width: 0;
+  background: var(--accent);
+  transition: width .2s linear;
+}
+
+.progress.is-paused .progress-track i { background: var(--warn); }
+
+.progress-pct {
+  font-size: 11px; font-weight: 650; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em; text-align: right;
+}
+
+.hint {
+  font-size: 11px; color: var(--ink-soft);
+  margin: -6px 0 12px;
+}
+
+.actions { display: flex; gap: 8px; }
+
+.btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); color: var(--ink);
+  font: inherit; font-weight: 650;
+  cursor: pointer;
+}
+.btn:hover:not(:disabled) { border-color: var(--ink-soft); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-stop { background: var(--stop); border-color: var(--stop); color: #fff; }
+
+.status {
+  margin-top: 8px; font-size: 12px; min-height: 1.3em;
+  color: var(--ink-soft);
+}
+.status.is-ok { color: var(--ok); }
+.status.is-warn { color: var(--warn); }
+.status.is-error { color: var(--error); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* The action row keeps Start full width, but shares it once a run is going. */
+.actions .btn { flex: 1 1 0; }

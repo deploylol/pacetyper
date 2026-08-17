@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pacetyper</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <h1>Pacetyper</h1>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab is-active" role="tab" data-tab="write" aria-selected="true">Write</button>
+    <button class="tab" role="tab" data-tab="test" aria-selected="false">Typing test</button>
+    <button class="tab" role="tab" data-tab="about" aria-selected="false">Help</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════ WRITE ═══════ -->
+<section id="write" class="panel is-active" role="tabpanel">
+  <div class="layout">
+
+    <div class="col-main">
+      <label class="field-label" for="text">Your text</label>
+      <textarea id="text" spellcheck="false"
+        placeholder="Paste or write the text you want typed out…"></textarea>
+      <div class="meta">
+        <span id="counter">0 characters · 0 words</span>
+        <button id="clear" class="link-btn" type="button">Clear</button>
+      </div>
+
+      <div class="preview-block">
+        <div class="preview-head">
+          <span class="field-label">Preview</span>
+          <span id="preview-note" class="muted">Watch it type here before sending it anywhere.</span>
+        </div>
+        <div id="preview" class="preview" aria-live="off"></div>
+      </div>
+    </div>
+
+    <aside class="col-side">
+      <div class="card">
+        <h2>Style</h2>
+
+        <label class="field-label" for="style">Typing style</label>
+        <select id="style">
+          <option value="careful">Careful</option>
+          <option value="normal" selected>Normal</option>
+          <option value="rushed">Rushed</option>
+          <option value="touch-typist">Touch typist</option>
+          <option value="hunt-and-peck">Two fingers</option>
+          <option value="sloppy">Fast and messy</option>
+          <option value="tired">Tired</option>
+        </select>
+        <p id="style-blurb" class="hint"></p>
+
+        <label class="field-label" for="mode">Pacing</label>
+        <select id="mode">
+          <option value="compose" selected>Writing as I go</option>
+          <option value="transcribe">Copying a draft</option>
+        </select>
+        <p class="hint">Writing something new means pausing to think, and those
+          pauses are most of what makes real typing uneven. Copying out
+          something already written is steadier and about 40% quicker.</p>
+
+        <div class="slider-row">
+          <label class="field-label" for="wpm">Speed</label>
+          <output id="wpm-out" for="wpm">45 wpm</output>
+        </div>
+        <input type="range" id="wpm" min="12" max="140" step="1" value="45">
+
+        <div class="slider-row">
+          <label class="field-label" for="typos">Accuracy</label>
+          <output id="typos-out" for="typos">97.2%</output>
+        </div>
+        <input type="range" id="typos" min="0" max="100" step="1" value="28">
+
+        <label class="check">
+          <input type="checkbox" id="perfect">
+          <span>Correct every typo<em>Typos still happen and are visibly fixed, but none are left in.</em></span>
+        </label>
+      </div>
+
+      <div class="card">
+        <h2>Long documents</h2>
+
+        <label class="field-label" for="breaks">Long breaks <span class="muted">(0 = none)</span></label>
+        <input type="number" id="breaks" min="0" max="20" step="1" value="0">
+        <p class="hint">Away-from-desk gaps of 30 seconds to 5 minutes, placed at
+          sentence ends. Useful for anything essay-length.</p>
+
+        <label class="field-label" for="duration">Finish by <span class="muted">(optional)</span></label>
+        <input type="text" id="duration" placeholder="e.g. 90m, 2h, 1h30m" autocomplete="off">
+        <p class="hint">Leave blank to type at the natural speed above.</p>
+      </div>
+
+      <div class="card card-profile">
+        <h2>Your typing profile</h2>
+        <p id="profile-summary" class="muted">Using built-in defaults.</p>
+        <label class="check">
+          <input type="checkbox" id="use-profile">
+          <span>Use my typing profile<em>The settings above still apply on top of it.</em></span>
+        </label>
+      </div>
+    </aside>
+  </div>
+
+  <div class="actionbar">
+    <div class="actionbar-left">
+      <div class="plan">
+        <div id="plan-headline" class="plan-headline">Enter some text to see the timing.</div>
+        <div id="plan-detail" class="plan-detail"></div>
+      </div>
+      <div id="progress" class="run-progress" hidden>
+        <div class="run-progress-track"><i id="progress-fill"></i></div>
+        <span id="progress-pct" class="run-progress-pct">0%</span>
+      </div>
+      <div class="target-row">
+        <label class="field-label" for="target-tab">Type into</label>
+        <select id="target-tab"><option value="">Loading open tabs…</option></select>
+        <button id="refresh-tabs" class="link-btn" type="button">Refresh</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="preview-btn" class="btn" type="button">Preview here</button>
+      <button id="type-btn" class="btn btn-primary" type="button">Type into page</button>
+      <button id="pause-btn" class="btn" type="button" hidden>Pause</button>
+      <button id="stop-btn" class="btn btn-stop" type="button" hidden>Stop</button>
+    </div>
+  </div>
+  <div id="status" class="status" role="status"></div>
+</section>
+
+<!-- ═════════════════════════════════════════════════ TYPING TEST ══════ -->
+<section id="test" class="panel" role="tabpanel">
+  <div class="test-wrap">
+    <div class="card">
+      <h2>Match your own typing</h2>
+      <p class="hint hint-block">
+        Two short phases, because they measure different things. Copying a
+        passage measures your fingers — the intended text is known, so every
+        mistake is countable. Writing your own answer measures how you pause and
+        rewrite, which copying can never show, because when the words are given
+        to you there is nothing to think about.
+      </p>
+      <p id="test-profile" class="muted"></p>
+    </div>
+
+    <!-- phase 1 -->
+    <div class="card" id="phase1">
+      <div class="phase-head"><span class="badge">1</span><h2>Copy this passage</h2></div>
+      <p class="hint">Type it as you normally would. Don't try to be accurate —
+        your mistakes are the useful part.</p>
+      <div id="passage" class="passage"></div>
+      <input type="text" id="copy-input" class="test-input" spellcheck="false"
+             autocomplete="off" placeholder="Start typing here…">
+      <div class="progress"><div id="copy-progress" class="progress-bar"></div></div>
+      <p id="copy-result" class="result"></p>
+    </div>
+
+    <!-- phase 2 -->
+    <div class="card" id="phase2">
+      <div class="phase-head"><span class="badge">2</span><h2>Answer in your own words</h2></div>
+      <p class="hint">Two or three sentences. Pause, backtrack and rephrase as
+        you normally would — that behaviour is exactly what's being measured.</p>
+      <p id="prompt" class="prompt"></p>
+      <textarea id="compose-input" class="test-input test-area" spellcheck="false"
+                placeholder="Write your answer…"></textarea>
+      <div class="meta">
+        <span id="compose-count" class="muted">0 / 140 characters</span>
+        <button id="compose-done" class="btn btn-small" type="button" disabled>Finish phase 2</button>
+      </div>
+      <p id="compose-result" class="result"></p>
+    </div>
+
+    <div class="card">
+      <div class="row-between">
+        <div>
+          <h2>Saved profile</h2>
+          <p id="saved-summary" class="muted">Nothing trained yet.</p>
+        </div>
+        <button id="reset-profile" class="btn btn-small btn-quiet" type="button">Reset</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ HELP ═══════ -->
+<section id="about" class="panel" role="tabpanel">
+  <div class="test-wrap">
+    <div class="card">
+      <h2>How to use it</h2>
+      <ol class="steps">
+        <li>Put your text in the box on the <strong>Write</strong> tab.</li>
+        <li>Pick a style and whether they're composing or copying.</li>
+        <li>Press <strong>Preview here</strong> to watch it without touching any page.</li>
+        <li>To type for real: click into the text box on the target page, pick
+          that tab under <strong>Type into</strong>, and press
+          <strong>Type into page</strong>.</li>
+      </ol>
+      <p class="hint hint-block">Press <strong>Stop</strong>, hit Escape on the
+        target page, or use the Stop button on the page itself to halt mid-way.</p>
+    </div>
+
+    <div class="card">
+      <h2>The quicker way</h2>
+      <p class="hint hint-block">
+        For most jobs you never need this tab. Click the Pacetyper toolbar
+        button while you are <em>already on the page you want filled</em> and a
+        small panel opens over it with the same text box and settings. Your
+        draft and settings are shared between the two, so whatever you type
+        here appears there.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Where this works</h2>
+      <p class="hint hint-block">
+        Ordinary web text boxes — comment fields, forms, webmail bodies —
+        rich-text editors, and canvas-rendered editors such as Google Docs.
+        Ordinary boxes get the browser's own editing command, so the page
+        receives the same trusted input events a real keypress produces.
+      </p>
+      <p class="hint hint-block">
+        Google Docs has no editable area to type into: it paints to a canvas and
+        reads keys from a hidden frame. Pacetyper tries several channels there
+        and keeps whichever one the editor honours, checking each attempt
+        against the caret — the one thing that moves when an edit really lands.
+        If none of them work, it stops and says so rather than pretending.
+      </p>
+      <p class="hint hint-block">
+        Firefox's own pages (<code>about:*</code>, the add-ons site) block every
+        extension and cannot be typed into by anything.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>If a page ignores it</h2>
+      <p class="hint hint-block">
+        Click directly inside the text box first so the cursor is visibly in it.
+        If Pacetyper cannot find a box it will ask you to click one, and the
+        page shows its own progress chip while typing — so you never have to
+        come back here to find out what happened.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Check it still works</h2>
+      <p class="hint hint-block">
+        <a id="selfcheck-link" href="../selfcheck.html" target="_blank" rel="noopener">Run
+        the engine self-check</a> — determinism, 800 fuzz plans, calibration
+        accuracy, keyboard timing order, deadline fitting, and a round trip that
+        trains on the engine's own output. Takes a second or two; everything
+        should say PASS.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>What the settings mean</h2>
+      <dl class="glossary">
+        <dt>Composing vs copying</dt>
+        <dd>The same person composes at roughly 60% of the rate they copy, and
+          nearly all the difference is pauses — between words, at commas, and
+          especially at sentence ends.</dd>
+        <dt>Mistakes</dt>
+        <dd>Errors land on keys next to the intended one, cluster where your
+          fingers are already awkward, and get noticed a few characters later —
+          then backspaced and retyped.</dd>
+        <dt>Fix every mistake</dt>
+        <dd>Guarantees the final text matches yours exactly. Without it, a few
+          slip through the way they really do.</dd>
+        <dt>Breaks</dt>
+        <dd>For essay-length work. Break time is excluded from the speed
+          reading, because a break is not slow typing.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="panel.js" type="module"></script>
+</body>
+</html>
