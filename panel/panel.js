@@ -489,6 +489,13 @@ el.typeBtn.addEventListener("click", typeIntoPage);
 
 el.refreshTabs.addEventListener("click", async () => {
   if (el.refreshTabs.textContent === "Grant access") {
+    // permissions.request does not exist on Firefox for Android at any
+    // version, so a browser missing it must be told rather than crash.
+    if (!browser.permissions || typeof browser.permissions.request !== "function") {
+      setStatus("This browser can't grant that permission. The toolbar " +
+                "button still types into the page you are on.", "warn");
+      return;
+    }
     // Must be called straight from the click: Firefox refuses a permission
     // request that is not attached to a user gesture.
     const granted = await browser.permissions.request(

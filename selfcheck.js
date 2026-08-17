@@ -8,7 +8,7 @@ import { TypingSimulator, parseDuration } from "./engine/simulator.js";
 import { PASSAGES, analyseTranscription } from "./engine/trainer.js";
 
 const lines = [];
-const log = (m, c) => lines.push(c ? `<span class="${c}">${m}</span>` : m);
+const log = (m, c) => lines.push({ text: String(m), cls: c || "" });
 let failures = 0;
 const check = (label, pass, detail) => {
   if (!pass) failures++;
@@ -131,4 +131,13 @@ try {
   log("FATAL " + e.message, "bad");
   log(String(e.stack));
 }
-document.getElementById("out").innerHTML = lines.join("\n");
+/* Built as nodes rather than markup: the log carries error messages and stack
+   text, which must never be parsed as HTML. */
+const out = document.getElementById("out");
+out.textContent = "";
+for (const line of lines) {
+  const node = line.cls ? document.createElement("span") : document.createTextNode(line.text);
+  if (line.cls) { node.className = line.cls; node.textContent = line.text; }
+  out.appendChild(node);
+  out.appendChild(document.createTextNode("\n"));
+}

@@ -528,13 +528,30 @@
       styled = true;
     } catch { /* older Firefox: fall back below */ }
 
-    root.innerHTML =
-      (styled ? "" : `<style>${CHIP_CSS}</style>`) + `
-      <div class="chip">
-        <span class="dot"></span>
-        <span class="msg"><span class="text"></span><span class="bar"><i></i></span></span>
-        <button type="button">Stop</button>
-      </div>`;
+    /* Built as nodes so no markup is ever parsed from a string. */
+    if (!styled) {
+      const tag = document.createElement("style");
+      tag.textContent = CHIP_CSS;
+      root.appendChild(tag);
+    }
+    const make = (tag, cls) => {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      return node;
+    };
+    const chip = make("div", "chip");
+    const msg = make("span", "msg");
+    const bar = make("span", "bar");
+    const stop = make("button");
+    stop.type = "button";
+    stop.textContent = "Stop";
+    bar.appendChild(make("i"));
+    msg.appendChild(make("span", "text"));
+    msg.appendChild(bar);
+    chip.appendChild(make("span", "dot"));
+    chip.appendChild(msg);
+    chip.appendChild(stop);
+    root.appendChild(chip);
     (document.body || document.documentElement).appendChild(host);
     root.querySelector("button").addEventListener("click", () => {
       cancelled = true;

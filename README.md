@@ -15,18 +15,18 @@ corrected. Everything stays on your computer.
 
 ## Install it
 
-You need Firefox 102 or later.
+You need Firefox 140 or later.
 
 1. Download `pacetyper.xpi` from [Releases](../../releases).
-2. Open Firefox. Go to `about:debugging`.
-3. Select **This Firefox**.
-4. Select **Load Temporary Add-on**.
-5. Select the `.xpi` file.
+2. Open Firefox. Go to `about:addons`.
+3. Select the gear icon near the top of the page.
+4. Select **Install Add-on From File**.
+5. Select the file that you downloaded. Select **Add**.
 
-The icon appears in the toolbar.
+The icon appears in the toolbar. The extension stays after a restart.
 
-> **NOTE:** A temporary add-on is removed when Firefox restarts. To keep it,
-> read [Keep it after a restart](#keep-it-after-a-restart).
+> **NOTE:** Mozilla signed this file. Firefox installs it as a normal
+> extension. It is not in the add-on search, because it is unlisted.
 
 ---
 
@@ -90,7 +90,7 @@ If your text has a numbered list, Pacetyper types the first number only:
 ```
 
 Google Docs adds `2.` and `3.` for you, the same as when you type by hand. If
-Pacetyper typed them as well, you would get `2. 2.` on every line.
+Pacetyper types them as well, you get `2. 2.` on every line.
 
 This needs **Automatically detect lists** under **Tools → Preferences**. It is
 on by default.
@@ -168,24 +168,6 @@ nothing is sent.
 
 ---
 
-## Keep it after a restart
-
-Firefox does not install an unsigned extension permanently. No preference
-changes this on a release build.
-
-Mozilla signs extensions at no cost, and your extension does not have to be
-public:
-
-1. Make an account at [addons.mozilla.org](https://addons.mozilla.org/developers/).
-2. Send `pacetyper.xpi`.
-3. For distribution, select **On your own**. This is the unlisted path. The
-   extension is signed. It does not appear in search.
-4. Download the signed file.
-
-Install the signed file with one selection. It stays after a restart.
-
----
-
 ## Build it yourself
 
 ```bash
@@ -193,6 +175,10 @@ python3 build.py
 ```
 
 This makes `dist/pacetyper-<version>.xpi`. Python 3 is the only requirement.
+
+A file that you build is not signed. Firefox loads an unsigned file only as a
+temporary add-on, from `about:debugging`. Firefox removes it at the next
+restart. The file in [Releases](../../releases) is signed, so it stays.
 
 ---
 
